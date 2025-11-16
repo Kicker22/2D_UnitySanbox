@@ -36,6 +36,32 @@ public class ItemSlot : MonoBehaviour, IPointerClickHandler
     void Start()
     {
         inventoryManager = GameObject.Find("InventoryCanvas").GetComponent<InventoryManager>();
+        
+        // Clear slot if it has quantity but no item name (corrupted state)
+        if (quantity > 0 && string.IsNullOrEmpty(itemName))
+        {
+            ClearSlot();
+        }
+    }
+    
+    public void ClearSlot()
+    {
+        itemName = "";
+        quantity = 0;
+        itemSprite = null;
+        isFull = false;
+        itemDescription = "";
+        
+        if (itemImage != null)
+        {
+            itemImage.sprite = emptySprite;
+        }
+        
+        if (quantityText != null)
+        {
+            quantityText.text = "";
+            quantityText.enabled = false;
+        }
     }
     public int AddItem(string itemName, int quantity, Sprite itemSprite, string itemDescription)
     {

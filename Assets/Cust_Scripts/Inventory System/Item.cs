@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class Item : MonoBehaviour
+public class Item : MonoBehaviour, I_Interactable
 {
     [SerializeField] public string itemName;  // Made public so InventorySlot can access it
     [SerializeField] private int quantity;
@@ -36,31 +36,35 @@ public class Item : MonoBehaviour
         }
     }
 
-    private void OnCollisionEnter2D(Collision2D collision) 
+    // I_Interactable implementation
+    public string InteractionPrompt => $"Pick up {itemName} (x{quantity})";
+
+    public bool Interact(Interactor interactor)
     {
-        if (collision.gameObject.tag == "Player")
+        if (inventoryManager != null)
         {
-            if (inventoryManager != null)
+            // Use sprite if assigned, otherwise use itemIcon as fallback
+            Sprite spriteToUse = sprite != null ? sprite : itemIcon;
+            
+            int leftOverItems = inventoryManager.AddItem(itemName, quantity, spriteToUse, itemDescription);
+            
+            if (leftOverItems <= 0)
             {
-                // Use sprite if assigned, otherwise use itemIcon as fallback
-                Sprite spriteToUse = sprite != null ? sprite : itemIcon;
-                
-                int leftOverItems = inventoryManager.AddItem(itemName, quantity, spriteToUse, itemDescription);
-                
-                if (leftOverItems <= 0)
-                {
-                    Destroy(gameObject);
-                }
-                else
-                {
-                    quantity = leftOverItems;
-                }
+                // Successfully picked up all items
+                Destroy(gameObject);
+                return true;
             }
             else
             {
-                Debug.LogError($"Item {itemName}: InventoryManager is null! Cannot add to inventory.");
-                Destroy(gameObject);
+                // Partially picked up, update quantity
+                quantity = leftOverItems;
+                return true; // Still successful interaction, just partial
             }
+        }
+        else
+        {
+            Debug.LogError($"Item {itemName}: InventoryManager is null! Cannot add to inventory.");
+            return false;
         }
     }
 }

@@ -4,7 +4,7 @@ using UnityEngine.InputSystem;
 public class Interactor : MonoBehaviour
 {
     [SerializeField] private Transform _interactionPoint;
-    [SerializeField] private float _interactionRadius = 0.5f;
+    [SerializeField] private float _interactionRadius = 1.5f;
     [SerializeField] private LayerMask _interactableMask;
 
     private readonly Collider2D[] _colliders = new Collider2D[3];

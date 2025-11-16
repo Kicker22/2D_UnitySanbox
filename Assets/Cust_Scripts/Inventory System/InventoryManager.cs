@@ -88,7 +88,7 @@ public class InventoryManager : MonoBehaviour
         for (int i = 0; i < itemSlot.Length; i++)
         {
             // Check if slot is empty OR has same item and isn't full
-            bool isEmptySlot = itemSlot[i].quantity == 0;
+            bool isEmptySlot = itemSlot[i].quantity == 0 || string.IsNullOrEmpty(itemSlot[i].itemName);
             bool isSameItemNotFull = (itemSlot[i].itemName == itemName && itemSlot[i].isFull == false);
             
             if (isEmptySlot || isSameItemNotFull)
