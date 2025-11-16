@@ -3187,9 +3187,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Item
   itemName: Pot
-  quantity: 3
-  sprite: {fileID: 21300090, guid: 29c9cded5e558164aaf8c9bf08aa1510, type: 3}
-  itemDescription: 
+  itemType: 0
+  itemRarity: 0
+  itemIcon: {fileID: 0}
+  equipmentType: 0
+  weaponType: 0
+  consumableType: 0
+  questItemType: 0
+  miscellaneousType: 0
+  toolType: 0
 --- !u!1001 &864996215
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -4174,17 +4180,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: Item (2)
       objectReference: {fileID: 0}
-    - target: {fileID: 7997245499161481876, guid: 850dfe7df4a7f0d4b971a221aa9aa5b2,
-        type: 3}
-      propertyPath: quantity
-      value: 23
-      objectReference: {fileID: 0}
-    - target: {fileID: 8011304984192884204, guid: 850dfe7df4a7f0d4b971a221aa9aa5b2,
-        type: 3}
-      propertyPath: m_Sprite
-      value: 
-      objectReference: {fileID: -5728686177044832811, guid: b1f24b3bc2e2f1d4b858657ad5c115a0,
-        type: 3}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -4555,17 +4550,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: Item (1)
       objectReference: {fileID: 0}
-    - target: {fileID: 7997245499161481876, guid: 850dfe7df4a7f0d4b971a221aa9aa5b2,
-        type: 3}
-      propertyPath: quantity
-      value: 10
-      objectReference: {fileID: 0}
-    - target: {fileID: 8011304984192884204, guid: 850dfe7df4a7f0d4b971a221aa9aa5b2,
-        type: 3}
-      propertyPath: m_Sprite
-      value: 
-      objectReference: {fileID: -5728686177044832811, guid: b1f24b3bc2e2f1d4b858657ad5c115a0,
-        type: 3}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -6366,12 +6350,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 6131939615791491914, guid: 182c6e9c297f6704c8ff79f45946636f,
-        type: 3}
-      propertyPath: itemDescription
-      value: "This apple is a magical apple from the land of Cornucopia. One bite
-        will restore 3 health\n \n"
       objectReference: {fileID: 0}
     - target: {fileID: 6235807489237262695, guid: 182c6e9c297f6704c8ff79f45946636f,
         type: 3}
