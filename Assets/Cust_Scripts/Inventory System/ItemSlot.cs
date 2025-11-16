@@ -44,9 +44,22 @@ public class ItemSlot : MonoBehaviour, IPointerClickHandler
             return quantity;
 
         this.itemName = itemName; // set item name
-
         this.itemSprite = itemSprite; // set item sprite
-        itemImage.sprite = itemSprite;
+        
+        // Try to find itemImage if it's not assigned
+        if (itemImage == null)
+        {
+            itemImage = GetComponentInChildren<Image>();
+        }
+        
+        if (itemImage != null)
+        {
+            itemImage.sprite = itemSprite;
+        }
+        else
+        {
+            Debug.LogError("ItemSlot: itemImage is null! No Image component found in children.");
+        }
 
         this.itemDescription = itemDescription; // set item description
 
@@ -55,8 +68,17 @@ public class ItemSlot : MonoBehaviour, IPointerClickHandler
 
         if (this.quantity > maxNumberOfItems)
         {
-            quantityText.text = maxNumberOfItems.ToString();
-            quantityText.enabled = true;
+            if (quantityText == null)
+            {
+                quantityText = GetComponentInChildren<TMP_Text>();
+            }
+            
+            if (quantityText != null)
+            {
+                quantityText.text = maxNumberOfItems.ToString();
+                quantityText.enabled = true;
+            }
+            
             isFull = true; // mark slot as full
 
             // return the leftovers
@@ -66,8 +88,20 @@ public class ItemSlot : MonoBehaviour, IPointerClickHandler
         }
 
         // Update quantity text
-        quantityText.text = this.quantity.ToString();
-        quantityText.enabled = true;
+        if (quantityText == null)
+        {
+            quantityText = GetComponentInChildren<TMP_Text>();
+        }
+        
+        if (quantityText != null)
+        {
+            quantityText.text = this.quantity.ToString();
+            quantityText.enabled = true;
+        }
+        else
+        {
+            Debug.LogError("ItemSlot: quantityText is null! No TMP_Text component found in children.");
+        }
 
         return 0; // no leftovers
     }

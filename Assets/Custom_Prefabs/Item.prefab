@@ -47,9 +47,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Item
   itemName: Apple
+  quantity: 5
+  sprite: {fileID: 0}
+  itemDescription: 
   itemType: 0
   itemRarity: 0
-  itemIcon: {fileID: 0}
+  itemIcon: {fileID: 7293598183456022363, guid: 1ddc9afd21fec77489b1248d18f31b68,
+    type: 3}
   equipmentType: 0
   weaponType: 0
   consumableType: 0

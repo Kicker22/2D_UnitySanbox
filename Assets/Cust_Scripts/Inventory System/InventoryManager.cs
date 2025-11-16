@@ -87,16 +87,23 @@ public class InventoryManager : MonoBehaviour
     {
         for (int i = 0; i < itemSlot.Length; i++)
         {
-            if ((itemSlot[i].itemName == itemName && itemSlot[i].isFull == false) || itemSlot[i].quantity == 0)
+            // Check if slot is empty OR has same item and isn't full
+            bool isEmptySlot = itemSlot[i].quantity == 0;
+            bool isSameItemNotFull = (itemSlot[i].itemName == itemName && itemSlot[i].isFull == false);
+            
+            if (isEmptySlot || isSameItemNotFull)
             {
                 int lefOverItems = itemSlot[i].AddItem(itemName, quantity, itemSprite, itemDescription);
+                
                 if (lefOverItems > 0)
+                {
                     lefOverItems = AddItem(itemName, lefOverItems, itemSprite, itemDescription);
+                }
 
                 return lefOverItems;
             }
         }
-
+        
         return quantity;
     }
 

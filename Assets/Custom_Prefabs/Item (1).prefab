@@ -138,9 +138,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Item
   itemName: Bannanas
+  quantity: 5
+  sprite: {fileID: 0}
+  itemDescription: 
   itemType: 0
   itemRarity: 0
-  itemIcon: {fileID: 0}
+  itemIcon: {fileID: -5728686177044832811, guid: b1f24b3bc2e2f1d4b858657ad5c115a0,
+    type: 3}
   equipmentType: 0
   weaponType: 0
   consumableType: 0

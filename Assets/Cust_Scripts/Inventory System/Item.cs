@@ -4,7 +4,7 @@ public class Item : MonoBehaviour
 {
     [SerializeField] public string itemName;  // Made public so InventorySlot can access it
     [SerializeField] private int quantity;
-    [SerializeField] private Sprite sprite;
+    [SerializeField] public Sprite sprite;  // Made public for easier access
 
     [TextArea]
     [SerializeField] public string itemDescription;  // Also made public for consistency
@@ -24,18 +24,43 @@ public class Item : MonoBehaviour
     
     void Start()
     {
-        inventoryManager = GameObject.Find("InventoryCanvas").GetComponent<InventoryManager>();
+        GameObject canvasObj = GameObject.Find("InventoryCanvas");
+        
+        if (canvasObj != null)
+        {
+            inventoryManager = canvasObj.GetComponent<InventoryManager>();
+        }
+        else
+        {
+            Debug.LogError($"Item {itemName}: InventoryCanvas GameObject not found!");
+        }
     }
 
     private void OnCollisionEnter2D(Collision2D collision) 
     {
         if (collision.gameObject.tag == "Player")
         {
-            int leftOverItems = inventoryManager.AddItem(itemName, quantity, sprite, itemDescription);
-            if (leftOverItems <= 0)
-                Destroy(gameObject);
+            if (inventoryManager != null)
+            {
+                // Use sprite if assigned, otherwise use itemIcon as fallback
+                Sprite spriteToUse = sprite != null ? sprite : itemIcon;
+                
+                int leftOverItems = inventoryManager.AddItem(itemName, quantity, spriteToUse, itemDescription);
+                
+                if (leftOverItems <= 0)
+                {
+                    Destroy(gameObject);
+                }
+                else
+                {
+                    quantity = leftOverItems;
+                }
+            }
             else
-                quantity = leftOverItems;
+            {
+                Debug.LogError($"Item {itemName}: InventoryManager is null! Cannot add to inventory.");
+                Destroy(gameObject);
+            }
         }
     }
 }
