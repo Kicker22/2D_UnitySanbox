@@ -17,6 +17,7 @@ GameObject:
   - component: {fileID: 8231284357422785943}
   - component: {fileID: 3813743922112640675}
   - component: {fileID: 3776936687212728928}
+  - component: {fileID: 1884384551221379328}
   - component: {fileID: 7857997995583012237}
   m_Layer: 20
   m_Name: PF Player
@@ -41,6 +42,7 @@ Transform:
   - {fileID: 6225530703386946816}
   - {fileID: 7061344998002503748}
   - {fileID: 1691244983478361517}
+  - {fileID: 6370044117263842194}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &8344582315377370172
@@ -249,6 +251,24 @@ MonoBehaviour:
   _UI_Pannel: {fileID: 3461064160757167010}
   _promptText: {fileID: 8449198329146287289}
   isDisplayed: 0
+--- !u!114 &1884384551221379328
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1437306866928489935}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6551ab810cda400409ed25e3f27ef095, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerCombat
+  attackDamage: 20
+  attackRange: 2
+  attackPoint: {fileID: 6370044117263842194}
+  enemyLayers:
+    serializedVersion: 2
+    m_Bits: 1
 --- !u!95 &7857997995583012237
 Animator:
   serializedVersion: 7
@@ -627,3 +647,34 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!1 &8967405457027171017
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6370044117263842194}
+  m_Layer: 20
+  m_Name: attackPoint
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &6370044117263842194
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8967405457027171017}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0.47, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 8138400571809408074}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
