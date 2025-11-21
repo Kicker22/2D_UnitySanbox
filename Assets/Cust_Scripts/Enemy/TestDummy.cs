@@ -16,6 +16,8 @@ public class TestDummy : MonoBehaviour
     [SerializeField] private bool canMove = true;
     [SerializeField] private bool canAttack = true;
     [SerializeField] private LayerMask playerLayerMask = 1;
+    [SerializeField] private LayerMask obstacleLayerMask;
+    [SerializeField] private float wallAvoidanceDistance = 1.5f;
 
     [Header("Visual Feedback")]
     [SerializeField] private SpriteRenderer spriteRenderer;
@@ -23,14 +25,21 @@ public class TestDummy : MonoBehaviour
     [SerializeField] private Color damageColor = Color.red;
     [SerializeField] private float damageFlashDuration = 0.2f;
 
+    [Header("Loot Settings")]
+    [SerializeField] private GameObject goldPrefab;
+    [SerializeField] private int minGoldDrop = 10;
+    [SerializeField] private int maxGoldDrop = 20;
+    [SerializeField] private float dropRadius = 1.0f;
+
     // reference to animator
+    [Header("Animator")]
     [SerializeField] private Animator _animator;
 
     // movment 
     private Vector2 movement;
 
     // testDummy specific health
-    [SerializeField] private float maxEnemyHealth = 100f;
+    // [SerializeField] private float maxEnemyHealth = 100f;
 
 
     // Private variables
@@ -41,6 +50,15 @@ public class TestDummy : MonoBehaviour
     private bool isPlayerInDetectionRange;
     private bool isPlayerInAttackRange;
     private bool isDead;
+    
+    // Pathfinding and stuck prevention
+    private Vector2 lastPosition;
+    private float stuckTimer = 0f;
+    private float stuckCheckInterval = 0.5f;
+    private float minimumMovementThreshold = 0.1f;
+    private Vector2 unstuckDirection;
+    private float unstuckDuration = 0f;
+    private float maxUnstuckDuration = 1f;
 
     // Enemy states
     public enum EnemyState
@@ -176,7 +194,6 @@ public class TestDummy : MonoBehaviour
     {
         if (!canMove)
         {
-            Debug.Log($"{gameObject.name}: Can't move - canMove is false");
             return;
         }
 
@@ -192,22 +209,116 @@ public class TestDummy : MonoBehaviour
             return;
         }
 
-        Vector2 direction = (player.position - transform.position).normalized;
+        Vector2 direction;
+        
+        // If currently in unstuck mode, continue in unstuck direction
+        if (unstuckDuration > 0f)
+        {
+            direction = unstuckDirection;
+            unstuckDuration -= Time.deltaTime;
+        }
+        else
+        {
+            direction = (player.position - transform.position).normalized;
+            
+            // Check for obstacles and adjust direction
+            direction = AvoidWalls(direction);
+            
+            // Detect if stuck and apply unstuck behavior
+            if (IsStuck())
+            {
+                unstuckDirection = GetUnstuckDirection(direction);
+                unstuckDuration = maxUnstuckDuration;
+                direction = unstuckDirection;
+            }
+        }
+        
         Vector2 velocity = direction * moveSpeed;
         rb.linearVelocity = velocity;
         movement = velocity;
         FlipSprite();
 
-        Debug.Log($"{gameObject.name}: Moving towards player. Direction: {direction}, Velocity: {velocity}");
+        // Update last position for stuck detection
+        lastPosition = transform.position;
+    }
 
-        // Face the player (flip sprite if moving left)
-        if (spriteRenderer != null)
+    private Vector2 AvoidWalls(Vector2 desiredDirection)
+    {
+        // Multiple raycasts in different directions to detect corners better
+        float[] angles = { 0f, 30f, -30f, 60f, -60f, 90f, -90f };
+        Vector2 bestDirection = desiredDirection;
+        float bestScore = -1f;
+        
+        foreach (float angle in angles)
         {
-            if (direction.x < 0)
-                spriteRenderer.flipX = true;
-            else if (direction.x > 0)
-                spriteRenderer.flipX = false;
+            Vector2 testDirection = Quaternion.Euler(0, 0, angle) * desiredDirection;
+            RaycastHit2D hit = Physics2D.Raycast(transform.position, testDirection, wallAvoidanceDistance, obstacleLayerMask);
+            
+            // Calculate score based on clearance and alignment with desired direction
+            float clearance = hit.collider == null ? wallAvoidanceDistance : hit.distance;
+            float alignment = Vector2.Dot(testDirection.normalized, desiredDirection);
+            float score = clearance * (0.5f + alignment * 0.5f); // Weighted score
+            
+            if (score > bestScore)
+            {
+                bestScore = score;
+                bestDirection = testDirection.normalized;
+            }
         }
+        
+        return bestDirection;
+    }
+
+    private bool IsStuck()
+    {
+        stuckTimer += Time.deltaTime;
+        
+        if (stuckTimer >= stuckCheckInterval)
+        {
+            stuckTimer = 0f;
+            float distanceMoved = Vector2.Distance(lastPosition, transform.position);
+            
+            // If barely moved while trying to chase, we're stuck
+            if (distanceMoved < minimumMovementThreshold && currentState == EnemyState.Chasing)
+            {
+                return true;
+            }
+        }
+        
+        return false;
+    }
+
+    private Vector2 GetUnstuckDirection(Vector2 currentDirection)
+    {
+        // Cast rays in all cardinal and diagonal directions to find the most open path
+        Vector2[] directions = {
+            Vector2.up, Vector2.down, Vector2.left, Vector2.right,
+            new Vector2(1, 1).normalized, new Vector2(-1, 1).normalized,
+            new Vector2(1, -1).normalized, new Vector2(-1, -1).normalized
+        };
+        
+        Vector2 bestDirection = -currentDirection; // Default: go backwards
+        float maxClearance = 0f;
+        
+        foreach (Vector2 dir in directions)
+        {
+            RaycastHit2D hit = Physics2D.Raycast(transform.position, dir, wallAvoidanceDistance * 2f, obstacleLayerMask);
+            float clearance = hit.collider == null ? wallAvoidanceDistance * 2f : hit.distance;
+            
+            // Prefer directions that lead toward the player
+            Vector2 toPlayer = (player.position - transform.position).normalized;
+            float playerAlignment = Vector2.Dot(dir, toPlayer);
+            float score = clearance * (1f + playerAlignment * 0.5f);
+            
+            if (score > maxClearance)
+            {
+                maxClearance = score;
+                bestDirection = dir;
+            }
+        }
+        
+        Debug.Log($"{gameObject.name}: Stuck! Moving in direction {bestDirection} with clearance {maxClearance}");
+        return bestDirection;
     }
 
         private void FlipSprite()
@@ -313,8 +424,37 @@ public class TestDummy : MonoBehaviour
         if (rb != null)
             rb.linearVelocity = Vector2.zero;
 
-        // Optional: Play death animation, drop loot, etc.
+        // Drop gold
+        DropGold();
+
+        // Play death animation and destroy
         StartCoroutine(DeathSequence());
+    }
+
+    private void DropGold()
+    {
+        if (goldPrefab != null)
+        {
+            // Calculate random position within drop radius
+            Vector2 randomOffset = Random.insideUnitCircle * dropRadius;
+            Vector3 dropPosition = transform.position + new Vector3(randomOffset.x, randomOffset.y, 0);
+            
+            // Spawn gold at random position
+            GameObject droppedGold = Instantiate(goldPrefab, dropPosition, Quaternion.identity);
+            
+            // Set random gold amount
+            int goldAmount = Random.Range(minGoldDrop, maxGoldDrop + 1);
+            GoldPickUp goldPickup = droppedGold.GetComponent<GoldPickUp>();
+            if (goldPickup != null)
+            {
+                goldPickup.SetGoldAmount(goldAmount);
+                Debug.Log($"{gameObject.name} dropped {goldAmount} gold at position {dropPosition}!");
+            }
+        }
+        else
+        {
+            Debug.LogWarning($"{gameObject.name} has no gold prefab assigned!");
+        }
     }
 
     private IEnumerator DeathSequence()
