@@ -3,12 +3,24 @@ using UnityEngine;
 
 public class PlayerEquipment : MonoBehaviour
 {
+    [Header("Starting Equipment")]
+    [SerializeField] private WeaponSO startingWeapon; // Optional: auto-equip on start
 
-    // Get a reference to the  weapon sprite renderer
+    [Header("Visual References")]
+    [Tooltip("Create a child GameObject with SpriteRenderer under the player and assign it here")]
     [SerializeField] private SpriteRenderer weaponSpriteRenderer;
     
     // Currently only handling weapons; can be expanded for armor/accessories
     private WeaponSO equippedWeapon; // Currently equipped weapon
+
+    private void Start()
+    {
+        // Auto-equip starting weapon if assigned
+        if (startingWeapon != null)
+        {
+            EquipWeapon(startingWeapon);
+        }
+    }
 
     // Equip a new weapon
     public void EquipWeapon(WeaponSO newWeapon)
@@ -21,7 +33,10 @@ public class PlayerEquipment : MonoBehaviour
     // Unequip the current weapon
     public void UnequipWeapon()
     {
-        Debug.Log($"Unequipped weapon: {equippedWeapon.weaponName}");
+        if (equippedWeapon != null)
+        {
+            Debug.Log($"Unequipped weapon: {equippedWeapon.weaponName}");
+        }
         equippedWeapon = null;
         UpdateWeaponSprite();
     }
@@ -35,12 +50,15 @@ public class PlayerEquipment : MonoBehaviour
     // Update the weapon sprite based on the equipped weapon
     private void UpdateWeaponSprite()
     {
-        if (equippedWeapon != null && weaponSpriteRenderer != null)
+        if (weaponSpriteRenderer == null)
+            return;
+
+        if (equippedWeapon != null && equippedWeapon.weaponIcon != null)
         {
             weaponSpriteRenderer.sprite = equippedWeapon.weaponIcon;
             weaponSpriteRenderer.enabled = true;
         }
-        else if (weaponSpriteRenderer != null)
+        else
         {
             weaponSpriteRenderer.sprite = null;
             weaponSpriteRenderer.enabled = false;
