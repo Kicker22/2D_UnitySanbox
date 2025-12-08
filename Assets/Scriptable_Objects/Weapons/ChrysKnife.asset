@@ -10,41 +10,30 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d57bfa1e212a1514ba032ac8420dbd23, type: 3}
-  m_Name: Dagger
+  m_Name: ChrysKnife
   m_EditorClassIdentifier: Assembly-CSharp::WeaponSO
-  weaponName: Dagger
+  weaponName: ChrysKnife
   weaponIcon: {fileID: -2486521743634864436, guid: 0df4a694566fb2346bf1cc26b5c73546,
     type: 3}
   weaponType: 0
   attackRange: 2
-  attack: 100
-  attackMax: 100
-  speed: 100
-  speedMax: 100
-  magic: 100
-  magicMax: 100
-  endurance: 25
+  attack: 10
+  attackMax: 35
+  speed: 10
+  speedMax: 50
+  magic: 0
+  magicMax: 15
+  endurance: 10
   enduranceMax: 100
-  weaponExp: 455
-  weaponExpToNextLevel: 3848
-  weaponLevel: 10
+  weaponExp: 0
+  weaponExpToNextLevel: 100
+  weaponLevel: 1
   weaponLevelMax: 10
-  evolutionPaths:
-  - evolutionName: ChrysKnife
-    targetWeapon: {fileID: 11400000, guid: ca34d9a50a3a456439b18e649d92f57b, type: 2}
-    attackRequired: 20
-    speedRequired: 10
-    magicRequired: 5
-    enduranceRequired: 15
-    fireAffinityRequired: 0
-    iceAffinityRequired: 0
-    lightningAffinityRequired: 0
-    windAffinityRequired: 0
-    holyAffinityRequired: 0
-  fireAffinity: 70
+  evolutionPaths: []
+  fireAffinity: 0
   iceAffinity: 0
   lightningAffinity: 0
-  windAffinity: 0
+  windAffinity: 10
   holyAffinity: 0
   undeadAffinity: 0
   beastAffinity: 0
